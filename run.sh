@@ -19,7 +19,7 @@ python scripts/formatTrips.py -t tmp/trips.trips.csv -m tmp/mapping.txt -o tmp/r
 # generate random vehicles
 python scripts/randomVehicles.py -m tmp/mapping.txt -n "$3" -c "$4" -o tmp/vehicles.txt
 # run model
-python scripts/model.py -v tmp/vehicles.txt -r tmp/requests.txt -e tmp/edges.txt -o tmp/routes.txt
+python scripts/model_cvxpy.py -v tmp/vehicles.txt -r tmp/requests.txt -e tmp/edges.txt -o tmp/routes.txt
 # format routes txt into SUMO-friendly xml
 python scripts/formatRoutes.py -r tmp/routes.txt -m tmp/mapping.txt -o tmp/routes.xml
 # run SUMO

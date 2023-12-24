@@ -78,8 +78,6 @@ x = m.addVars(len(vehicles), len(edges), vtype=GRB.BINARY, name='x')
 t = m.addVars(len(vehicles), num_vertices, vtype=GRB.CONTINUOUS, lb=0, name='t')
 q = m.addVars(len(vehicles), num_vertices, vtype=GRB.CONTINUOUS, lb=0, name='q')
 
-print(len(vehicles), len(requests), num_vertices, len(edges))
-
 # define objective
 m.setObjective(quicksum(t[k_ind, r.destination] for k_ind in range(len(vehicles)) for r in requests), GRB.MINIMIZE)
 
