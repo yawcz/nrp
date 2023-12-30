@@ -26,8 +26,10 @@ edges_filename = args.edges
 
 m = gp.Model('car_sharing')
 
-m.setParam('IntegralityFocus', 1)
 m.setParam('MIPFocus', 1)
+m.setParam('Threads', 5)
+m.setParam('SolFiles', 'solution/run_1')
+m.setParam('NodeFileStart', 0.5)
 
 class Vehicle:
 	def __init__(self, position, capacity):
@@ -73,7 +75,7 @@ for e_ind, edge in enumerate(edges):
 
 # define model variables
 b = m.addVars(len(vehicles), len(requests), vtype=GRB.BINARY, name='b')
-e = m.addVars(len(vehicles), num_vertices, vtype=GRB.BINARY, name='e')
+e = m.addVars(len(vehicles), num_vertices, vtype=GRB.CONTINUOUS, lb=0, name='e')
 x = m.addVars(len(vehicles), len(edges), vtype=GRB.BINARY, name='x')
 t = m.addVars(len(vehicles), num_vertices, vtype=GRB.CONTINUOUS, lb=0, name='t')
 q = m.addVars(len(vehicles), num_vertices, vtype=GRB.CONTINUOUS, lb=0, name='q')

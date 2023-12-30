@@ -140,7 +140,7 @@ for e_ind, edge in enumerate(edges):
 
 problem = cp.Problem(objective, constraints)
 
-problem.solve(solver=cp.COPT, verbose=True)
+problem.solve(solver=cp.COPT, Threads=20, MipTasks=20, Presolve=3, SolTimeLimit=120, verbose=True)
 
 print(e.value)
 
