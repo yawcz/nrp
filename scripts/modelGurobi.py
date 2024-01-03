@@ -31,9 +31,10 @@ m = gp.Model('car_sharing')
 m.setParam('MIPFocus', 3)
 m.setParam('Threads', 1)
 m.setParam('NodeFileStart', 0.25)
-m.setParam('Cuts', 2)
 m.setParam('Presolve', 2)
-m.setParam('ImproveStartTime', 60)
+m.setParam('Cuts', 0)
+m.setParam('Heuristics', 1)
+m.setParam('RINS', 1)
 m.setParam('WorkLimit', 8000)
 
 class Vehicle:
