@@ -29,12 +29,12 @@ edges_filename = args.edges
 m = gp.Model('car_sharing')
 
 m.setParam('MIPFocus', 3)
-m.setParam('Threads', 10)
-m.setParam('NodeFileStart', 0.5)
+m.setParam('Threads', 1)
+m.setParam('NodeFileStart', 0.25)
 m.setParam('Cuts', 2)
 m.setParam('Presolve', 2)
-m.setParam('ImproveStartTime', 1800)
-m.setParam('WorkLimit', 3600)
+m.setParam('ImproveStartTime', 60)
+m.setParam('WorkLimit', 8000)
 
 class Vehicle:
 	def __init__(self, position, capacity):

@@ -19,7 +19,7 @@ python scripts/formatTrips.py -t tmp/trips.trips.csv -m tmp/mapping.txt -o tmp/r
 # generate random vehicles
 python scripts/randomVehicles.py -m tmp/mapping.txt -n "$3" -c "$4" -o tmp/vehicles.txt
 # generate initial feasible solution
-python scripts/getInitialSolution.py -v tmp/vehicles.txt -r tmp/requests.txt -e tmp/edges.txt -o tmp/initial_solution.txt
+./scripts/getInitialSolution tmp/vehicles.txt tmp/requests.txt tmp/edges.txt tmp/initial_solution.txt
 # run model
 python scripts/modelGurobi.py -v tmp/vehicles.txt -r tmp/requests.txt -e tmp/edges.txt -i tmp/initial_solution.txt -o tmp/routes.txt
 # format routes txt into SUMO-friendly xml
