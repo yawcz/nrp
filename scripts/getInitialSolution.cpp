@@ -1,24 +1,31 @@
-#include <bits/stdc++.h>
-using namespace std;
+#include <cassert>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <limits>
+#include <map>
+#include <queue>
+#include <set>
+#include <vector>
 
 using ld = long double;
 
 int original_num_vertices;
-vector<vector<tuple<int, ld, int> > > original_adj;
-vector<bool> cache_ready;
-vector<vector<ld> > cache_dist;
-vector<vector<pair<int, int> > > cache_parents;
-priority_queue<pair<ld, int>, vector<pair<ld, int> >, greater<pair<ld, int> > > pq;
+std::vector<std::vector<std::tuple<int, ld, int> > > original_adj;
+std::vector<bool> cache_ready;
+std::vector<std::vector<ld> > cache_dist;
+std::vector<std::vector<std::pair<int, int> > > cache_parents;
+std::priority_queue<std::pair<ld, int>, std::vector<std::pair<ld, int> >, std::greater<std::pair<ld, int> > > pq;
 
-ld dijkstra(int origin, int destination, vector<ld> &dist, vector<pair<int, int> > &parents) {
+ld dijkstra(int origin, int destination, std::vector<ld> &dist, std::vector<std::pair<int, int> > &parents) {
 	if (cache_ready[origin]) {
 		assert((int)dist.size() == (int)cache_dist[origin].size());
 		copy(cache_dist[origin].begin(), cache_dist[origin].end(), dist.begin());
 		copy(cache_parents[origin].begin(), cache_parents[origin].end(), parents.begin());
 		return dist[destination];
 	}
-	dist = vector<ld>(original_num_vertices, numeric_limits<ld>::infinity());
-	parents = vector<pair<int, int> >(original_num_vertices);
+	dist = std::vector<ld>(original_num_vertices, std::numeric_limits<ld>::infinity());
+	parents = std::vector<std::pair<int, int> >(original_num_vertices);
 	dist[origin] = 0;
 	pq.emplace(0, origin);
 	while (!pq.empty()) {
@@ -30,7 +37,7 @@ ld dijkstra(int origin, int destination, vector<ld> &dist, vector<pair<int, int>
 		for (auto [v, w, edge_ind] : original_adj[u]) {
 			if (dist[v] > dist[u] + w) {
 				dist[v] = dist[u] + w;
-				parents[v] = make_pair(u, edge_ind);
+				parents[v] = std::make_pair(u, edge_ind);
 				pq.emplace(dist[v], v);
 			}
 		}
@@ -42,9 +49,9 @@ ld dijkstra(int origin, int destination, vector<ld> &dist, vector<pair<int, int>
 	return dist[destination];
 }
 
-ld get_cost(vector<int> &route, int capacity) {
-	vector<ld> dist(original_num_vertices, numeric_limits<ld>::infinity());
-	vector<pair<int, int> > parents(original_num_vertices);
+ld get_cost(std::vector<int> &route, int capacity) {
+	std::vector<ld> dist(original_num_vertices, std::numeric_limits<ld>::infinity());
+	std::vector<std::pair<int, int> > parents(original_num_vertices);
 	
 	int passengers = 0;
 	for (int i = 1; i < (int)route.size(); i++) {
@@ -55,7 +62,7 @@ ld get_cost(vector<int> &route, int capacity) {
 		}
 		
 		if (passengers > capacity) {
-			return numeric_limits<ld>::infinity();
+			return std::numeric_limits<ld>::infinity();
 		}
 	}
 	
@@ -70,7 +77,7 @@ ld get_cost(vector<int> &route, int capacity) {
 	return ret;
 }
 
-void output_2d_array(vector<vector<int> > arr, ofstream &output) {
+void output_2d_array(std::vector<std::vector<int> > arr, std::ofstream &output) {
 	for (int i = 0; i < (int)arr.size(); i++) {
 		for (int j = 0; j < (int)arr[0].size(); j++) {
 			output << arr[i][j] << ' ';
@@ -79,8 +86,8 @@ void output_2d_array(vector<vector<int> > arr, ofstream &output) {
 	}
 }
 
-void output_2d_array(vector<vector<ld> > &arr, ofstream &output) {
-	output << fixed << setprecision(6);
+void output_2d_array(std::vector<std::vector<ld> > &arr, std::ofstream &output) {
+	output << std::fixed << std::setprecision(6);
 	for (int i = 0; i < (int)arr.size(); i++) {
 		for (int j = 0; j < (int)arr[0].size(); j++) {
 			output << arr[i][j] << ' ';
@@ -97,20 +104,20 @@ int main(int argc, char *argv[]) {
 	// argv[4]: path to .txt file with mapping information
 	// argv[5]: path to initial solution output file
 	// argv[6]: path to new requests file
-	ifstream vehicles_in(argv[1]), requests_in(argv[2]), edges_in(argv[3]), mapping_in(argv[4]);
-	ofstream sol_out(argv[5], ios::trunc), requests_out(argv[6], ios::trunc);
+	std::ifstream vehicles_in(argv[1]), requests_in(argv[2]), edges_in(argv[3]), mapping_in(argv[4]);
+	std::ofstream sol_out(argv[5], std::ios::trunc), requests_out(argv[6], std::ios::trunc);
 	int num_vertices = 0;
-	vector<tuple<int, int, vector<pair<int, int> > > > vehicles;
-	vector<pair<int, int> > requests;
-	vector<tuple<int, int, ld> > edges;
-	vector<string> mapping;
-	vector<vector<tuple<int, ld, int> > > adj, adj_r;
+	std::vector<std::tuple<int, int, std::vector<std::pair<int, int> > > > vehicles;
+	std::vector<std::pair<int, int> > requests;
+	std::vector<std::tuple<int, int, ld> > edges;
+	std::vector<std::string> mapping;
+	std::vector<std::vector<std::tuple<int, ld, int> > > adj, adj_r;
 
 	{
 		// input vehicles
 		int position, capacity;
 		while (vehicles_in >> position >> capacity) {
-			vehicles.emplace_back(position, capacity, vector<pair<int, int> >());
+			vehicles.emplace_back(position, capacity, std::vector<std::pair<int, int> >());
 		}
 		vehicles_in.close();
 	}
@@ -127,7 +134,7 @@ int main(int argc, char *argv[]) {
 		int u, v;
 		ld w;
 		while (edges_in >> u >> v >> w) {
-			num_vertices = max({num_vertices, u + 1, v + 1});
+			num_vertices = std::max({num_vertices, u + 1, v + 1});
 			edges.emplace_back(u, v, w);
 		}
 		adj.resize(num_vertices);
@@ -143,7 +150,7 @@ int main(int argc, char *argv[]) {
 	}
 	{
 		// input mapping
-		string s;
+		std::string s;
 		while (mapping_in >> s) {
 			mapping.push_back(s);
 		}
@@ -158,13 +165,13 @@ int main(int argc, char *argv[]) {
 		route = {{position + 1, -1}};
 	}
 	
-	vector<vector<int> > b(vehicles.size(), vector<int>(requests.size(), 0));
+	std::vector<std::vector<int> > b(vehicles.size(), std::vector<int>(requests.size(), 0));
 	
-	vector<ld> dist(original_num_vertices, numeric_limits<ld>::infinity());
-	vector<pair<int, int> > parents(original_num_vertices);
+	std::vector<ld> dist(original_num_vertices, std::numeric_limits<ld>::infinity());
+	std::vector<std::pair<int, int> > parents(original_num_vertices);
 	
 	for (int r_ind = 0; r_ind < (int)requests.size(); r_ind++) {
-		tuple<ld, int, int, int> best_insert = make_tuple(numeric_limits<ld>::infinity(), -1, -1, -1);
+		std::tuple<ld, int, int, int> best_insert = std::make_tuple(std::numeric_limits<ld>::infinity(), -1, -1, -1);
 		auto [origin, destination] = requests[r_ind];
 		
 		for (int v_ind = 0; v_ind < (int)vehicles.size(); v_ind++) {
@@ -172,15 +179,15 @@ int main(int argc, char *argv[]) {
 			
 			for (int i = 1; i <= (int)route.size(); i++) {
 				for (int j = i; j <= (int)route.size(); j++) {
-					vector<int> tmp_route;
+					std::vector<int> tmp_route;
 					for (auto &[v, _] : route) {
 						tmp_route.push_back(v);
 					}
 					
 					tmp_route.insert(tmp_route.begin() + j, -(destination + 1));
 					tmp_route.insert(tmp_route.begin() + i, origin + 1);
-					if (get_cost(tmp_route, capacity) != numeric_limits<ld>::infinity()) {
-						best_insert = min(best_insert, make_tuple(get_cost(tmp_route, capacity), v_ind, i, j));
+					if (get_cost(tmp_route, capacity) != std::numeric_limits<ld>::infinity()) {
+						best_insert = min(best_insert, std::make_tuple(get_cost(tmp_route, capacity), v_ind, i, j));
 					}
 				}
 			}
@@ -192,17 +199,17 @@ int main(int argc, char *argv[]) {
 		
 		auto route_to_edit = &get<2>(vehicles[best_v_ind]);
 		
-		route_to_edit->insert(route_to_edit->begin() + best_j, make_pair(-(destination + 1), r_ind));
-		route_to_edit->insert(route_to_edit->begin() + best_i, make_pair(origin + 1, r_ind));
+		route_to_edit->insert(route_to_edit->begin() + best_j, std::make_pair(-(destination + 1), r_ind));
+		route_to_edit->insert(route_to_edit->begin() + best_i, std::make_pair(origin + 1, r_ind));
 		b[best_v_ind][r_ind] = 1;
 	}
 	
-	vector<vector<tuple<int, int, int> > > real_routes(vehicles.size());
+	std::vector<std::vector<std::tuple<int, int, int> > > real_routes(vehicles.size());
 	
 	for (int v_ind = 0; v_ind < (int)vehicles.size(); v_ind++) {
 		auto &[position, capacity, route] = vehicles[v_ind];
 		
-		vector<tuple<int, int, int> > real_route = {{position, 0, -1}};
+		std::vector<std::tuple<int, int, int> > real_route = {{position, 0, -1}};
 		
 		for (int i = 0; i < (int)route.size() - 1; i++) {
 			if (abs(route[i].first) == abs(route[i + 1].first)) {
@@ -213,7 +220,7 @@ int main(int argc, char *argv[]) {
 			dijkstra(abs(route[i].first) - 1, abs(route[i + 1].first) - 1, dist, parents);
 			
 			int cur_vertex = abs(route[i + 1].first) - 1;
-			vector<int> e_inds;
+			std::vector<int> e_inds;
 			
 			while (cur_vertex != abs(route[i].first) - 1) {
 				e_inds.push_back(parents[cur_vertex].second);
@@ -233,10 +240,10 @@ int main(int argc, char *argv[]) {
 		real_routes[v_ind] = real_route;
 	}
 	
-	ofstream edges_out(argv[3], ios::app), mapping_out(argv[4], ios::app);
+	std::ofstream edges_out(argv[3], std::ios::app), mapping_out(argv[4], std::ios::app);
 	
 	for (auto &real_route : real_routes) {
-		set<int> seen;
+		std::set<int> seen;
 		
 		for (auto &[vertex, _, __] : real_route) {
 			if (seen.find(vertex) != seen.end()) {
@@ -274,23 +281,23 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	
-	map<pair<int, int>, pair<ld, int> > edges_mapping;
+	std::map<std::pair<int, int>, std::pair<ld, int> > edges_mapping;
 	
 	for (int e_ind = 0; e_ind < (int)edges.size(); e_ind++) {
 		auto [u, v, w] = edges[e_ind];
-		if (edges_mapping.find(make_pair(u, v)) == edges_mapping.end()) {
-			edges_mapping[make_pair(u, v)] = make_pair(w, e_ind);
+		if (edges_mapping.find(std::make_pair(u, v)) == edges_mapping.end()) {
+			edges_mapping[std::make_pair(u, v)] = std::make_pair(w, e_ind);
 		} else {
-			edges_mapping[make_pair(u, v)] = min(edges_mapping[make_pair(u, v)], make_pair(w, e_ind));
+			edges_mapping[std::make_pair(u, v)] = std::min(edges_mapping[std::make_pair(u, v)], std::make_pair(w, e_ind));
 		}
 	}
 	
-	vector<vector<int> > e(vehicles.size(), vector<int>(num_vertices, 0));
-	vector<vector<int> > x(vehicles.size(), vector<int>(edges.size(), 0));
-	vector<vector<ld> > t(vehicles.size(), vector<ld>(num_vertices, 0));
-	vector<vector<int> > q(vehicles.size(), vector<int>(num_vertices, 0));
+	std::vector<std::vector<int> > e(vehicles.size(), std::vector<int>(num_vertices, 0));
+	std::vector<std::vector<int> > x(vehicles.size(), std::vector<int>(edges.size(), 0));
+	std::vector<std::vector<ld> > t(vehicles.size(), std::vector<ld>(num_vertices, 0));
+	std::vector<std::vector<int> > q(vehicles.size(), std::vector<int>(num_vertices, 0));
 	
-	vector<int> origin(requests.size()), destination(requests.size());
+	std::vector<int> origin(requests.size()), destination(requests.size());
 	
 	for (int v_ind = 0; v_ind < (int)vehicles.size(); v_ind++) {
 		auto real_route = real_routes[v_ind];
@@ -308,8 +315,8 @@ int main(int argc, char *argv[]) {
 		e[v_ind][get<0>(real_route.back())] = 1;
 		
 		for (int i = 0; i + 1 < (int)real_route.size(); i++) {
-			assert(edges_mapping.find(make_pair(get<0>(real_route[i]), get<0>(real_route[i + 1]))) != edges_mapping.end());
-			auto tmp = edges_mapping[make_pair(get<0>(real_route[i]), get<0>(real_route[i + 1]))];
+			assert(edges_mapping.find(std::make_pair(get<0>(real_route[i]), get<0>(real_route[i + 1]))) != edges_mapping.end());
+			auto tmp = edges_mapping[std::make_pair(get<0>(real_route[i]), get<0>(real_route[i + 1]))];
 			x[v_ind][tmp.second] = 1;
 			t[v_ind][get<0>(real_route[i + 1])] = t[v_ind][get<0>(real_route[i])] + tmp.first;
 			q[v_ind][get<0>(real_route[i + 1])] = q[v_ind][get<0>(real_route[i])] + get<1>(real_route[i + 1]);
@@ -320,7 +327,7 @@ int main(int argc, char *argv[]) {
 		requests_out << origin[r_ind] << ' ' << destination[r_ind] << '\n';
 	}
 	
-	cout << "Initial solution found" << endl;
+	std::cout << "Initial solution found" << std::endl;
 	output_2d_array(b, sol_out);
 	output_2d_array(e, sol_out);
 	output_2d_array(x, sol_out);

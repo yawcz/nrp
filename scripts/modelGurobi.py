@@ -35,8 +35,6 @@ m.setParam('Threads', 1)
 m.setParam('NodeFileStart', 0.5)
 m.setParam('Presolve', 2)
 m.setParam('Cuts', 2)
-m.setParam('ImproveStartTime', 600)
-m.setParam('WorkLimit', 8000)
 
 class Vehicle:
 	def __init__(self, position, capacity):

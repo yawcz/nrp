@@ -15,6 +15,8 @@ parser.add_argument('-a', '--assignment', help='path to .txt file with request a
 
 args = parser.parse_args()
 
+print('Starting analysis...')
+
 mapping = []
 requests = []
 assignment = []
@@ -53,7 +55,7 @@ for r_ind, assigned_vehicle in enumerate(assignment):
 	
 	total_arrival_time += arrival_time
 
-print("Total arrival time (seconds):", total_arrival_time)
+print('Total arrival time (seconds):', total_arrival_time)
 
 # analyse emissions data
 df_emissions = pd.read_csv(args.emissions, sep=';')
@@ -65,4 +67,4 @@ for index, row in df_emissions.iterrows():
 	if not math.isnan(cur_co2):
 		total_co2 += cur_co2
 
-print("Total CO2 emitted (mg):", total_co2)
+print('Total CO2 emitted (mg):', total_co2)
