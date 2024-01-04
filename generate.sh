@@ -7,6 +7,9 @@
 # fifth parameter: capacity of each vehicle
 # sixth parameter: output of vehicles file
 
+if [ -d "tmp" ]; then rm -Rf tmp; fi
+mkdir tmp
+
 # get underlying graph
 python scripts/getGraph.py -n "$1" -go tmp/edges.txt -mo tmp/mapping.txt
 # keep largest strongly connected component

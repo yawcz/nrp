@@ -20,8 +20,10 @@ python scripts/modelGurobi.py -v "$3" -r tmp/new_requests.txt -e tmp/new_edges.t
 # format routes txt into SUMO-friendly xml
 python scripts/formatRoutes.py -r tmp/routes.txt -m tmp/new_mapping.txt -o tmp/routes.xml
 # run SUMO
-sumo -n "$1" -r tmp/routes.xml --fcd-output tmp/fcd.xml
+sumo -n "$1" -r tmp/routes.xml --fcd-output tmp/fcd.xml --emission-output tmp/emissions.xml
 # convert FCD data to csv for post-processing
 python scripts/xml2csv.py tmp/fcd.xml
-# perform post-processing on FCD data
-python scripts/analysis.py -fcd tmp/fcd.csv -m tmp/new_mapping.txt -r tmp/new_requests.txt -a tmp/assignments.txt
+# convert emissions data to csv for post-processing
+python scripts/xml2csv.py tmp/emissions.xml
+# perform post-processing on FCD and emissions data
+python scripts/analysis.py -fcd tmp/fcd.csv -e tmp/emissions.csv -m tmp/new_mapping.txt -r tmp/new_requests.txt -a tmp/assignments.txt

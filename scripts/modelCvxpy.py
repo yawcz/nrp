@@ -142,8 +142,6 @@ problem = cp.Problem(objective, constraints)
 
 problem.solve(solver=cp.COPT, Threads=20, MipTasks=20, Presolve=3, SolTimeLimit=120, verbose=True)
 
-print(e.value)
-
 print('\nMinimum total arrival time: %g\n' % problem.value)
 
 for r_ind, r in enumerate(requests):
