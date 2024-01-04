@@ -31,6 +31,15 @@ vType.set('length', '5')
 vType.set('maxSpeed', '70')
 vType.set('vClass', 'ignoring')
 
+def make_unique(route):
+	ret = []
+	
+	for i in route:
+		if len(ret) == 0 or ret[-1] != i:
+			ret.append(i)
+	
+	return ret
+
 with open(args.routes, 'r') as f:
 	for index, line in enumerate(f.readlines()):
 		vehicle = ET.SubElement(routes, 'vehicle')
@@ -39,7 +48,7 @@ with open(args.routes, 'r') as f:
 		vehicle.set('depart', '0')
 		
 		route = ET.SubElement(vehicle, 'route')
-		route.set('edges', ' '.join(list(map(lambda x : mapping[int(x)], line.strip().split()))))
+		route.set('edges', ' '.join(make_unique(list(map(lambda x : mapping[int(x)], line.strip().split())))))
 
 with open(args.output, 'wb') as f:
     f.write(ET.tostring(routes))

@@ -16,7 +16,9 @@ parser.add_argument('-e', '--edges', help='path to .txt file with edge informati
 # initial solution file
 parser.add_argument('-i', '--initial', help='path to .txt file with initial solution information', type=str, required=True)
 # output format: space-separated integers representing the route of each vehicle
-parser.add_argument('-o', '--output', help='path to output file', type=str, required=True)
+parser.add_argument('-ro', '--route_output', help='path to route output file', type=str, required=True)
+# output format: space-separated integers representing the route of each vehicle
+parser.add_argument('-ao', '--assign_output', help='path to assignment output file', type=str, required=True)
 
 args = parser.parse_args()
 
@@ -29,12 +31,12 @@ edges_filename = args.edges
 m = gp.Model('car_sharing')
 
 m.setParam('MIPFocus', 3)
-m.setParam('Threads', 1)
+m.setParam('Threads', 5)
 m.setParam('NodeFileStart', 0.25)
 m.setParam('Presolve', 2)
-m.setParam('Cuts', 0)
-m.setParam('Heuristics', 1)
-m.setParam('RINS', 1)
+m.setParam('Cuts', 2)
+m.setParam('Heuristics', 0.5)
+m.setParam('RINS', 2)
 m.setParam('WorkLimit', 8000)
 
 class Vehicle:
@@ -162,9 +164,6 @@ m.addConstrs(((x[k_ind, e_ind] == 1) >> (q[k_ind, e.v] >= q[k_ind, e.u] + quicks
 	for k_ind in range(len(vehicles))),
 	name='passengers_enter_and_alight_vehicle')
 
-# ~ m.computeIIS()
-# ~ m.write("model.ilp")
-
 # find optimal solution
 m.optimize()
 
@@ -173,14 +172,18 @@ m.printQuality()
 
 print('\nMinimum total arrival time: %g\n' % m.ObjVal)
 
-for r_ind, r in enumerate(requests):
-	assigned_vehicle = -1
-	for k_ind in range(len(vehicles)):
-		if b[k_ind, r_ind].X == 1:
-			assigned_vehicle = k_ind
-	print('Request #%g (from vertex %g to %g) assigned to vehicle %g, pick-up time: %g, drop-off time: %g' % (r_ind, r.origin, r.destination, assigned_vehicle, t[assigned_vehicle, r.origin].X, t[assigned_vehicle, r.destination].X))
+with open(args.assign_output, 'w') as f:
+	for r_ind, r in enumerate(requests):
+		assigned_vehicle = -1
+		for k_ind in range(len(vehicles)):
+			if b[k_ind, r_ind].X == 1:
+				assigned_vehicle = k_ind
+		
+		f.write('%g\n' % assigned_vehicle)
+		
+		print('Request #%g (from vertex %g to %g) assigned to vehicle %g, pick-up time: %g, drop-off time: %g' % (r_ind, r.origin, r.destination, assigned_vehicle, t[assigned_vehicle, r.origin].X, t[assigned_vehicle, r.destination].X))
 
-with open(args.output, 'w') as f:
+with open(args.route_output, 'w') as f:
 	for k_ind, k in enumerate(vehicles):
 		to = [-1 for i in range(num_vertices)]
 		
