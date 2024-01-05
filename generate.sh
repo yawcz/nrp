@@ -13,7 +13,7 @@ mkdir tmp
 # get underlying graph
 python scripts/getGraph.py -n "$1" -go tmp/edges.txt -mo tmp/mapping.txt
 # keep largest strongly connected component
-./scripts/keepSCC tmp/edges.txt tmp/new_edges.txt
+./scripts/keepLargestSCC tmp/edges.txt tmp/new_edges.txt
 # generate requests
 python scripts/randomTrips.py -e tmp/new_edges.txt -n "$2" -o "$3"
 # generate vehicles
