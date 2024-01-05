@@ -24,6 +24,7 @@ ld dijkstra(int origin, int destination, std::vector<ld> &dist, std::vector<std:
 		copy(cache_parents[origin].begin(), cache_parents[origin].end(), parents.begin());
 		return dist[destination];
 	}
+	// Dijkstra's algorithm
 	dist = std::vector<ld>(original_num_vertices, std::numeric_limits<ld>::infinity());
 	parents = std::vector<std::pair<int, int> >(original_num_vertices);
 	dist[origin] = 0;
@@ -42,10 +43,13 @@ ld dijkstra(int origin, int destination, std::vector<ld> &dist, std::vector<std:
 			}
 		}
 	}
+	
+	// cache results
 	cache_ready[origin] = true;
 	assert(cache_dist[origin].empty());
 	copy(dist.begin(), dist.end(), back_inserter(cache_dist[origin]));
 	copy(parents.begin(), parents.end(), back_inserter(cache_parents[origin]));
+	
 	return dist[destination];
 }
 
@@ -53,6 +57,7 @@ ld get_cost(std::vector<int> &route, int capacity) {
 	std::vector<ld> dist(original_num_vertices, std::numeric_limits<ld>::infinity());
 	std::vector<std::pair<int, int> > parents(original_num_vertices);
 	
+	// check capacity constraint violation
 	int passengers = 0;
 	for (int i = 1; i < (int)route.size(); i++) {
 		if (route[i] < 0) {
@@ -66,6 +71,7 @@ ld get_cost(std::vector<int> &route, int capacity) {
 		}
 	}
 	
+	// calculate cost of route
 	ld sf = 0, ret = 0;
 	for (int i = 1; i < (int)route.size(); i++) {
 		sf += dijkstra(abs(route[i - 1]) - 1, abs(route[i]) - 1, dist, parents);
@@ -77,17 +83,7 @@ ld get_cost(std::vector<int> &route, int capacity) {
 	return ret;
 }
 
-void output_2d_array(std::vector<std::vector<int> > arr, std::ofstream &output) {
-	for (int i = 0; i < (int)arr.size(); i++) {
-		for (int j = 0; j < (int)arr[0].size(); j++) {
-			output << arr[i][j] << ' ';
-		}
-		output << '\n';
-	}
-}
-
-void output_2d_array(std::vector<std::vector<ld> > &arr, std::ofstream &output) {
-	output << std::fixed << std::setprecision(6);
+template<typename T> void output_2d_array(std::vector<std::vector<T> > arr, std::ofstream &output) {
 	for (int i = 0; i < (int)arr.size(); i++) {
 		for (int j = 0; j < (int)arr[0].size(); j++) {
 			output << arr[i][j] << ' ';
@@ -222,6 +218,7 @@ int main(int argc, char *argv[]) {
 			int cur_vertex = abs(route[i + 1].first) - 1;
 			std::vector<int> e_inds;
 			
+			// backtrack to find real route
 			while (cur_vertex != abs(route[i].first) - 1) {
 				e_inds.push_back(parents[cur_vertex].second);
 				cur_vertex = parents[cur_vertex].first;
@@ -247,7 +244,7 @@ int main(int argc, char *argv[]) {
 		
 		for (auto &[vertex, _, __] : real_route) {
 			if (seen.find(vertex) != seen.end()) {
-				// make copy
+				// make copy of vertex
 				adj.push_back({});
 				adj_r.push_back({});
 				assert(num_vertices != vertex);
@@ -328,9 +325,9 @@ int main(int argc, char *argv[]) {
 	}
 	
 	std::cout << "Initial solution found" << std::endl;
-	output_2d_array(b, sol_out);
-	output_2d_array(e, sol_out);
-	output_2d_array(x, sol_out);
-	output_2d_array(t, sol_out);
-	output_2d_array(q, sol_out);
+	output_2d_array<int>(b, sol_out);
+	output_2d_array<int>(e, sol_out);
+	output_2d_array<int>(x, sol_out);
+	output_2d_array<ld>(t, sol_out);
+	output_2d_array<int>(q, sol_out);
 }
